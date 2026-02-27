@@ -1,0 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Theme tokens ─────────────────────────────────────────── */
+:root {
+  /* Light theme (default for all) */
+  --color-bg:      246 248 251;
+  --color-surface: 255 255 255;
+  --color-border:  224 231 240;
+  --color-accent:  0 100 100;
+  --color-text:    13 25 44;
+  --color-muted:   96 112 128;
+  --color-success: 13 158 92;
+  --color-warn:    210 50 50;
+  --color-timer:   196 116 8;
+}
+
+[data-theme="dark"] {
+  --color-bg:      10 22 40;
+  --color-surface: 15 30 53;
+  --color-border:  30 48 80;
+  --color-accent:  0 200 200;
+  --color-text:    216 227 240;
+  --color-muted:   136 149 167;
+  --color-success: 61 214 140;
+  --color-warn:    240 90 90;
+  --color-timer:   245 166 35;
+}
+
+@layer base {
+  * { box-sizing: border-box; }
+  html, body, #root {
+    height: 100%;
+    background: rgb(var(--color-bg));
+    color: rgb(var(--color-text));
+    font-family: 'Geist', sans-serif;
+  }
+  /* Hide scrollbar on fullscreen prototype page */
+  .no-scroll { overflow: hidden; }
+}
+
+@layer components {
+  /* Animated recording dot */
+  .rec-dot {
+    @apply w-1.5 h-1.5 rounded-full bg-accent;
+    animation: pulse-dot 1.4s ease-in-out infinite;
+  }
+
+  /* Progress bar fill */
+  .prog-fill {
+    transition: width 0.4s ease;
+  }
+
+  /* Skeleton shimmer — uses theme surface/border so works in both modes */
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      rgb(var(--color-surface)) 25%,
+      rgb(var(--color-border))  50%,
+      rgb(var(--color-surface)) 75%
+    );
+    background-size: 800px 100%;
+    animation: shimmer 1.6s ease-in-out infinite;
+  }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.2; }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position:  400px 0; }
+}
+
+/* Mission control bar slide-up animation */
+@keyframes mc-slide-up {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+@keyframes mc-slide-down {
+  from { transform: translateY(0); }
+  to   { transform: translateY(100%); }
+}
+.mc-enter  { animation: mc-slide-up   0.25s ease forwards; }
+.mc-exit   { animation: mc-slide-down 0.2s  ease forwards; }
+
+/* Cursor blink */
+@keyframes blink { 50% { opacity: 0; } }
+.cursor-blink {
+  display: inline-block;
+  width: 1px; height: 0.9em;
+  background: currentColor;
+  animation: blink 1s step-end infinite;
+  vertical-align: text-bottom;
+  margin-left: 1px;
+}
