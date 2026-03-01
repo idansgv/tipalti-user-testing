@@ -4,91 +4,6 @@ import { supabase } from '../../lib/supabase'
 import { getStudyForEdit, getSessionCount, saveTriggerDefinitions } from '../../lib/db'
 import { Card, Label, Btn, Loading } from '../../components/UI'
 
-// ── Study templates ───────────────────────────────────────────
-const TEMPLATES = [
-  {
-    id: 'supplier-portal',
-    name: 'Supplier Portal — Onboarding',
-    description: '3 tasks, SEQ + open text per task',
-    chapters: [
-      {
-        position: 1, title: 'Create Supplier Account', task_text: 'Navigate to the supplier portal and complete the account registration process.', figma_url: '', transition_desc: 'Great! Now let\'s try submitting a document.',
-        survey_questions: [
-          { kind: 'opinion_scale', prompt: 'How easy was it to complete this task? (1 = very difficult, 7 = very easy)', position: 1, scale_labels: { max: 7, low: 'Very difficult', high: 'Very easy' } },
-          { kind: 'text', prompt: 'What, if anything, was confusing or unclear during this task?', position: 2 },
-        ],
-      },
-      {
-        position: 2, title: 'Submit Compliance Document', task_text: 'Upload a required compliance document and submit it for review.', figma_url: '', transition_desc: 'Almost done — one more task.',
-        survey_questions: [
-          { kind: 'opinion_scale', prompt: 'How easy was it to complete this task? (1 = very difficult, 7 = very easy)', position: 1, scale_labels: { max: 7, low: 'Very difficult', high: 'Very easy' } },
-          { kind: 'text', prompt: 'What would you improve about this step?', position: 2 },
-        ],
-      },
-      {
-        position: 3, title: 'View Payment Status', task_text: 'Find the payment status for your most recent invoice.', figma_url: '', transition_desc: '',
-        survey_questions: [
-          { kind: 'opinion_scale', prompt: 'How easy was it to complete this task? (1 = very difficult, 7 = very easy)', position: 1, scale_labels: { max: 7, low: 'Very difficult', high: 'Very easy' } },
-          { kind: 'text', prompt: 'Any other feedback about this task?', position: 2 },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'payment-approval',
-    name: 'Payment Approval Flow',
-    description: '2 tasks, SEQ + yes/no + open text per task',
-    chapters: [
-      {
-        position: 1, title: 'Review Pending Payments', task_text: 'Review the list of pending payments and identify any that require immediate attention.', figma_url: '', transition_desc: 'Good work! One more task to go.',
-        survey_questions: [
-          { kind: 'opinion_scale', prompt: 'How easy was it to find the information you needed? (1 = very difficult, 7 = very easy)', position: 1, scale_labels: { max: 7, low: 'Very difficult', high: 'Very easy' } },
-          { kind: 'yes_no', prompt: 'Did you find all the information you needed to make a decision?', position: 2 },
-          { kind: 'text', prompt: 'What information was missing or hard to find?', position: 3 },
-        ],
-      },
-      {
-        position: 2, title: 'Approve a Payment Batch', task_text: 'Select and approve a batch of payments for processing.', figma_url: '', transition_desc: '',
-        survey_questions: [
-          { kind: 'opinion_scale', prompt: 'How easy was it to complete this task? (1 = very difficult, 7 = very easy)', position: 1, scale_labels: { max: 7, low: 'Very difficult', high: 'Very easy' } },
-          { kind: 'yes_no', prompt: 'Would you feel confident approving payments using this interface in a real scenario?', position: 2 },
-          { kind: 'text', prompt: 'What concerns, if any, do you have about this flow?', position: 3 },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'sus',
-    name: 'SUS — System Usability Scale',
-    description: '1 task, 10 SUS opinion_scale questions',
-    chapters: [
-      {
-        position: 1, title: 'Explore the System', task_text: 'Spend a few minutes exploring the system as you normally would.', figma_url: '', transition_desc: '',
-        survey_questions: [
-          { kind: 'opinion_scale', prompt: 'I think that I would like to use this system frequently.', position: 1, scale_labels: { max: 5, low: 'Strongly disagree', high: 'Strongly agree' } },
-          { kind: 'opinion_scale', prompt: 'I found the system unnecessarily complex.', position: 2, scale_labels: { max: 5, low: 'Strongly disagree', high: 'Strongly agree' } },
-          { kind: 'opinion_scale', prompt: 'I thought the system was easy to use.', position: 3, scale_labels: { max: 5, low: 'Strongly disagree', high: 'Strongly agree' } },
-          { kind: 'opinion_scale', prompt: 'I think that I would need the support of a technical person to be able to use this system.', position: 4, scale_labels: { max: 5, low: 'Strongly disagree', high: 'Strongly agree' } },
-          { kind: 'opinion_scale', prompt: 'I found the various functions in this system were well integrated.', position: 5, scale_labels: { max: 5, low: 'Strongly disagree', high: 'Strongly agree' } },
-          { kind: 'opinion_scale', prompt: 'I thought there was too much inconsistency in this system.', position: 6, scale_labels: { max: 5, low: 'Strongly disagree', high: 'Strongly agree' } },
-          { kind: 'opinion_scale', prompt: 'I would imagine that most people would learn to use this system very quickly.', position: 7, scale_labels: { max: 5, low: 'Strongly disagree', high: 'Strongly agree' } },
-          { kind: 'opinion_scale', prompt: 'I found the system very cumbersome to use.', position: 8, scale_labels: { max: 5, low: 'Strongly disagree', high: 'Strongly agree' } },
-          { kind: 'opinion_scale', prompt: 'I felt very confident using the system.', position: 9, scale_labels: { max: 5, low: 'Strongly disagree', high: 'Strongly agree' } },
-          { kind: 'opinion_scale', prompt: 'I needed to learn a lot of things before I could get going with this system.', position: 10, scale_labels: { max: 5, low: 'Strongly disagree', high: 'Strongly agree' } },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'blank',
-    name: 'Blank',
-    description: 'Start from scratch',
-    chapters: [
-      { position: 1, title: '', task_text: '', figma_url: '', transition_desc: '', survey_questions: [] },
-    ],
-  },
-]
-
 // ── Helpers ───────────────────────────────────────────────────
 function emptyChapter(pos) {
   return {
@@ -189,7 +104,7 @@ export default function StudyBuilder() {
   const { studyId } = useParams()           // set when editing, undefined for new
   const isEdit = !!studyId
 
-  const [step, setStep] = useState(isEdit ? 1 : 0)  // skip template picker in edit mode
+  const [step, setStep] = useState(1)
   const [loadingEdit, setLoadingEdit] = useState(isEdit)
   const [saving, setSaving] = useState(false)
   const [error, setError]   = useState(null)
@@ -268,16 +183,6 @@ export default function StudyBuilder() {
   }, [studyId, isEdit])
 
   // ── Form helpers ──────────────────────────────────────────────
-  function applyTemplate(tpl) {
-    setChapters(tpl.chapters.map(ch => ({
-      id: null,
-      ...ch,
-      survey_questions: (ch.survey_questions || []).map((q, i) => ({ ...q, id: null, position: i + 1 })),
-      triggers: [],
-    })))
-    setStep(1)
-  }
-
   function addChapter() {
     if (chapters.length >= 5) return
     setChapters(prev => [...prev, emptyChapter(prev.length + 1)])
@@ -636,62 +541,17 @@ export default function StudyBuilder() {
 
   if (loadingEdit) return <Loading text="Loading study…" />
 
-  // ── Step 0: Template picker (new study only) ───────────────────
-  if (step === 0) {
-    return (
-      <div className="min-h-screen bg-bg p-8">
-        <div className="max-w-2xl mx-auto">
-          <div className="flex items-center gap-4 mb-8">
-            <button
-              onClick={() => navigate('/admin/dashboard')}
-              className="text-muted hover:text-text text-sm transition-colors"
-            >
-              ← Back
-            </button>
-            <div>
-              <div className="font-mono text-[10px] tracking-widest uppercase text-accent mb-0.5">
-                New Study
-              </div>
-              <h1 className="text-xl font-semibold tracking-tight">Choose a Template</h1>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            {TEMPLATES.map(tpl => (
-              <button
-                key={tpl.id}
-                onClick={() => applyTemplate(tpl)}
-                className="text-left bg-surface border border-border rounded-xl p-5
-                  hover:border-accent/40 transition-all group"
-              >
-                <div className="text-sm font-semibold text-text mb-1 group-hover:text-accent transition-colors">
-                  {tpl.name}
-                </div>
-                <div className="text-xs text-muted">{tpl.description}</div>
-                {tpl.id !== 'blank' && (
-                  <div className="mt-3 font-mono text-[10px] text-accent/60">
-                    {tpl.chapters.length} task{tpl.chapters.length !== 1 ? 's' : ''}
-                  </div>
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  // ── Step 1: Study form ─────────────────────────────────────────
+  // ── Study form ─────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-bg p-8">
       <div className="max-w-2xl mx-auto">
 
         <div className="flex items-center gap-4 mb-8">
           <button
-            onClick={() => isEdit ? navigate(`/admin/studies/${studyId}`) : setStep(0)}
+            onClick={() => navigate(isEdit ? `/admin/studies/${studyId}` : '/admin/dashboard')}
             className="text-muted hover:text-text text-sm transition-colors"
           >
-            {isEdit ? '← Results' : '← Templates'}
+            ← {isEdit ? 'Results' : 'Dashboard'}
           </button>
           <div>
             <div className="font-mono text-[10px] tracking-widest uppercase text-accent mb-0.5">
