@@ -17,8 +17,9 @@ export default function Prototype() {
   const [loading, setLoading]     = useState(true)
   const [mcVisible, setMcVisible] = useState(true)
   const [elapsed, setElapsed]     = useState(0)
-  const [finishing, setFinishing] = useState(false)
-  const [micToast, setMicToast]   = useState(null)  // null | 'requesting' | 'denied'
+  const [finishing, setFinishing]           = useState(false)
+  const [micToast, setMicToast]             = useState(null)  // null | 'requesting' | 'denied'
+  const [completionOverlay, setCompletionOverlay] = useState(null)  // null | trigger name string
 
   const startTimeRef      = useRef(Date.now())
   const iframeRef         = useRef(null)
@@ -130,6 +131,11 @@ export default function Prototype() {
           })
           if (import.meta.env.DEV) {
             console.info(`[Prototype] Trigger fired: "${def.name}" (frame: "${frameName}")`)
+          }
+          // Auto-complete task if configured
+          if (def.action === 'complete') {
+            setCompletionOverlay(def.name)
+            setTimeout(() => handleFinish('completed'), 1500)
           }
         }
       })
@@ -277,6 +283,19 @@ export default function Prototype() {
         style={{ zIndex: 20 }}
         onMouseEnter={() => { setMcVisible(true); scheduleMcHide() }}
       />
+
+      {/* ── Task completion overlay ── */}
+      {completionOverlay && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-bg/70 backdrop-blur-sm">
+          <div className="bg-surface border border-accent/30 rounded-2xl px-10 py-8 flex flex-col items-center gap-3 shadow-2xl">
+            <div className="w-14 h-14 rounded-full bg-accent/20 flex items-center justify-center">
+              <span className="text-accent text-3xl">✓</span>
+            </div>
+            <p className="text-base font-semibold text-text">Task complete</p>
+            <p className="text-xs text-muted font-mono">{completionOverlay}</p>
+          </div>
+        </div>
+      )}
 
       {/* ── Mission Control Bar ── */}
       <div

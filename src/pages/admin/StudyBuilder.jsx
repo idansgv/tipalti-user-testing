@@ -160,6 +160,7 @@ export default function StudyBuilder() {
             id: t.id,
             name: t.name,
             frame_name: t.frame_name,
+            action: t.action || 'none',
           })),
         })))
         setOriginalChapters(s.chapters)
@@ -239,7 +240,7 @@ export default function StudyBuilder() {
       prev.map(c => {
         if (c.position !== chapterPos) return c
         if ((c.triggers || []).length >= 8) return c
-        return { ...c, triggers: [...(c.triggers || []), { id: null, name: '', frame_name: '' }] }
+        return { ...c, triggers: [...(c.triggers || []), { id: null, name: '', frame_name: '', action: 'none' }] }
       })
     )
   }
@@ -822,7 +823,7 @@ export default function StudyBuilder() {
                   </p>
                   <div className="flex flex-col gap-2">
                     {(ch.triggers || []).map((t, tIdx) => (
-                      <div key={tIdx} className="bg-bg border border-border rounded-lg p-3">
+                      <div key={tIdx} className="bg-bg border border-border rounded-lg p-3 flex flex-col gap-2">
                         <div className="flex items-center gap-2">
                           <input
                             className="flex-1 bg-transparent border-none text-sm text-text placeholder-muted focus:outline-none"
@@ -844,6 +845,17 @@ export default function StudyBuilder() {
                             ✕
                           </button>
                         </div>
+                        <label className="flex items-center gap-2 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            checked={t.action === 'complete'}
+                            onChange={e => updateTrigger(ch.position, tIdx, 'action', e.target.checked ? 'complete' : 'none')}
+                            className="w-3.5 h-3.5 rounded accent-accent"
+                          />
+                          <span className="text-xs text-muted group-hover:text-text transition-colors">
+                            Complete task when this fires
+                          </span>
+                        </label>
                       </div>
                     ))}
                     {(ch.triggers || []).length < 8 && (

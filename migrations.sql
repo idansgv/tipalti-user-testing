@@ -169,6 +169,12 @@ exception when duplicate_object then null; end $$;
 alter table studies add column if not exists enable_voice_recording boolean default false;
 
 -- ─────────────────────────────────────────────────────────────────────────────
+-- 15. trigger_definitions: action column for auto-complete behavior
+-- ─────────────────────────────────────────────────────────────────────────────
+alter table trigger_definitions add column if not exists action text not null default 'none'
+  check (action in ('none', 'complete'));
+
+-- ─────────────────────────────────────────────────────────────────────────────
 -- NOTE: Create a Supabase Storage bucket named "voice-recordings"
 --   - public: false
 --   - insert policy: allow all (anon + authenticated)

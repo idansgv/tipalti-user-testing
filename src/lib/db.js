@@ -187,6 +187,7 @@ export async function saveTriggerDefinitions(chapterId, triggers) {
     position:   i + 1,
     name:       t.name.trim(),
     frame_name: t.frame_name.trim(),
+    action:     t.action || 'none',
   }))
 
   const { error } = await supabase.from('trigger_definitions').insert(rows)
@@ -227,7 +228,7 @@ export async function getTriggerResults(studyId) {
 
   const { data: defs, error: dErr } = await supabase
     .from('trigger_definitions')
-    .select('id, chapter_id, name, frame_name, position')
+    .select('id, chapter_id, name, frame_name, position, action')
     .in('chapter_id', chapterIds)
     .order('position')
   if (dErr) throw dErr
@@ -458,6 +459,7 @@ export async function duplicateStudy(studyId) {
       position:   t.position,
       name:       t.name,
       frame_name: t.frame_name,
+      action:     t.action || 'none',
     }))
     if (triggers.length) {
       const { error: tErr } = await supabase.from('trigger_definitions').insert(triggers)
