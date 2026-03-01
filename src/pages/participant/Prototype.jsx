@@ -39,9 +39,7 @@ export default function Prototype() {
         setChapter(ch)
         setStudy(s)
         // Trigger defs are already loaded via getStudyWithChapters
-        if (!ch.is_figma_make) {
-          triggerDefsRef.current = ch.trigger_definitions || []
-        }
+        triggerDefsRef.current = ch.trigger_definitions || []
       })
       .catch(e => setError(e.message))
       .finally(() => setLoading(false))
@@ -82,30 +80,38 @@ export default function Prototype() {
   // ── Figma postMessage trigger listener ───────────────────────
   useEffect(() => {
     if (loading || error) return
-    if (chapter?.is_figma_make) return  // Not supported for Figma Make
 
     function handleMessage(event) {
-      // Only process messages from Figma
-      if (!event.origin.includes('figma.com')) return
-
       let frameName = null
 
-      try {
-        const msg = typeof event.data === 'string' ? JSON.parse(event.data) : event.data
+      // Regular Figma: filter by origin
+      if (event.origin.includes('figma.com')) {
+        try {
+          const msg = typeof event.data === 'string' ? JSON.parse(event.data) : event.data
 
-        // Figma prototype navigation event
-        if (msg?.type === 'PRESENTED_DESIGN_NAVIGATION') {
-          frameName = msg?.data?.destination?.name
-            || msg?.data?.destinationId
-            || null
-        }
+          if (msg?.type === 'PRESENTED_DESIGN_NAVIGATION') {
+            frameName = msg?.data?.destination?.name
+              || msg?.data?.destinationId
+              || null
+          }
 
-        // Log all unrecognized events in dev mode to aid debugging
-        if (import.meta.env.DEV && msg?.type && msg.type !== 'PRESENTED_DESIGN_NAVIGATION') {
-          console.debug('[Prototype] Figma postMessage:', msg.type, msg)
+          if (import.meta.env.DEV && msg?.type && msg.type !== 'PRESENTED_DESIGN_NAVIGATION') {
+            console.debug('[Prototype] Figma postMessage:', msg.type, msg)
+          }
+        } catch {
+          // Non-JSON messages from Figma — ignore
         }
-      } catch {
-        // Non-JSON messages from Figma — ignore
+      }
+
+      // Figma Make: custom UT_TRIGGER protocol (any origin)
+      if (!frameName && chapter?.is_figma_make) {
+        try {
+          const msg = typeof event.data === 'string' ? JSON.parse(event.data) : event.data
+          if (msg?.type === 'UT_TRIGGER' && msg?.name) {
+            frameName = msg.name
+            if (import.meta.env.DEV) console.debug('[Prototype] UT_TRIGGER received:', msg.name)
+          }
+        } catch {}
       }
 
       if (!frameName) return

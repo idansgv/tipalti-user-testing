@@ -811,50 +811,51 @@ export default function StudyBuilder() {
                   </div>
                 </div>
 
-                {/* Triggers (not available for Figma Make) */}
-                {!ch.is_figma_make && (
-                  <div className="border-t border-border pt-4">
-                    <Label className="mb-2 block">Triggers</Label>
-                    <p className="text-xs text-muted mb-3 leading-relaxed">
-                      Fire a named event when the participant navigates to a specific Figma frame.
-                    </p>
-                    <div className="flex flex-col gap-2">
-                      {(ch.triggers || []).map((t, tIdx) => (
-                        <div key={tIdx} className="bg-bg border border-border rounded-lg p-3">
-                          <div className="flex items-center gap-2">
-                            <input
-                              className="flex-1 bg-transparent border-none text-sm text-text placeholder-muted focus:outline-none"
-                              placeholder="Trigger name (e.g. Clicked Submit)"
-                              value={t.name}
-                              onChange={e => updateTrigger(ch.position, tIdx, 'name', e.target.value)}
-                            />
-                            <span className="text-muted text-xs">→</span>
-                            <input
-                              className="flex-1 bg-transparent border-none text-sm text-text placeholder-muted focus:outline-none font-mono text-xs"
-                              placeholder="Exact Figma frame name"
-                              value={t.frame_name}
-                              onChange={e => updateTrigger(ch.position, tIdx, 'frame_name', e.target.value)}
-                            />
-                            <button
-                              onClick={() => removeTrigger(ch.position, tIdx)}
-                              className="text-muted hover:text-warn text-xs flex-shrink-0 transition-colors"
-                            >
-                              ✕
-                            </button>
-                          </div>
+                {/* Triggers */}
+                <div className="border-t border-border pt-4">
+                  <Label className="mb-2 block">Triggers</Label>
+                  <p className="text-xs text-muted mb-3 leading-relaxed">
+                    {ch.is_figma_make
+                      ? <>Fire a named event when the prototype calls <code className="font-mono bg-bg px-1 rounded">window.parent.postMessage(&#123; type: 'UT_TRIGGER', name: '...' &#125;, '*')</code></>
+                      : 'Fire a named event when the participant navigates to a specific Figma frame.'
+                    }
+                  </p>
+                  <div className="flex flex-col gap-2">
+                    {(ch.triggers || []).map((t, tIdx) => (
+                      <div key={tIdx} className="bg-bg border border-border rounded-lg p-3">
+                        <div className="flex items-center gap-2">
+                          <input
+                            className="flex-1 bg-transparent border-none text-sm text-text placeholder-muted focus:outline-none"
+                            placeholder="Trigger name (e.g. Clicked Submit)"
+                            value={t.name}
+                            onChange={e => updateTrigger(ch.position, tIdx, 'name', e.target.value)}
+                          />
+                          <span className="text-muted text-xs">→</span>
+                          <input
+                            className="flex-1 bg-transparent border-none text-sm text-text placeholder-muted focus:outline-none font-mono text-xs"
+                            placeholder={ch.is_figma_make ? "Event name (matches `name` in postMessage)" : "Exact Figma frame name"}
+                            value={t.frame_name}
+                            onChange={e => updateTrigger(ch.position, tIdx, 'frame_name', e.target.value)}
+                          />
+                          <button
+                            onClick={() => removeTrigger(ch.position, tIdx)}
+                            className="text-muted hover:text-warn text-xs flex-shrink-0 transition-colors"
+                          >
+                            ✕
+                          </button>
                         </div>
-                      ))}
-                      {(ch.triggers || []).length < 8 && (
-                        <button
-                          onClick={() => addTrigger(ch.position)}
-                          className="text-xs text-muted hover:text-text transition-colors font-mono text-left"
-                        >
-                          + Add trigger
-                        </button>
-                      )}
-                    </div>
+                      </div>
+                    ))}
+                    {(ch.triggers || []).length < 8 && (
+                      <button
+                        onClick={() => addTrigger(ch.position)}
+                        className="text-xs text-muted hover:text-text transition-colors font-mono text-left"
+                      >
+                        + Add trigger
+                      </button>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
             </Card>
           ))}
