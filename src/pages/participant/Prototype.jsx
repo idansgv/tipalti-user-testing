@@ -20,6 +20,8 @@ export default function Prototype() {
   const [finishing, setFinishing]           = useState(false)
   const [micToast, setMicToast]             = useState(null)  // null | 'requesting' | 'denied'
   const [completionOverlay, setCompletionOverlay] = useState(null)  // null | trigger name string
+  const [showMicPrompt, setShowMicPrompt]   = useState(false)
+  const startRecordingRef                   = useRef(null)
 
   const startTimeRef      = useRef(Date.now())
   const iframeRef         = useRef(null)
@@ -68,7 +70,8 @@ export default function Prototype() {
       }
     }
 
-    startRecording()
+    startRecordingRef.current = startRecording
+    setShowMicPrompt(true)
 
     return () => {
       // Cleanup on unmount without finish (e.g. navigate away)
@@ -265,6 +268,37 @@ export default function Prototype() {
       ) : (
         <div className="absolute inset-0 flex items-center justify-center">
           <p className="text-muted font-mono text-sm">No Figma URL configured for this task.</p>
+        </div>
+      )}
+
+      {/* ── Mic pre-permission modal ── */}
+      {showMicPrompt && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-bg/80 backdrop-blur-sm">
+          <div className="bg-surface border border-border rounded-2xl px-8 py-7 max-w-sm w-full mx-4 shadow-2xl flex flex-col gap-5">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-accent/15 flex items-center justify-center flex-shrink-0">
+                <svg className="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 0 1 6 0v8.25a3 3 0 0 1-3 3Z" />
+                </svg>
+              </div>
+              <h2 className="text-base font-semibold text-text">Think out loud</h2>
+            </div>
+            <p className="text-sm text-muted leading-relaxed">
+              As you explore the prototype, please narrate your thoughts — what you're looking for, what you expect to happen, and anything that feels confusing or surprising.
+            </p>
+            <p className="text-sm text-muted leading-relaxed">
+              Your browser will ask for microphone access so we can capture your commentary. This recording is only used to help the research team understand your experience.
+            </p>
+            <button
+              className="w-full py-2.5 rounded-lg bg-accent text-bg text-sm font-semibold hover:opacity-90 transition-opacity"
+              onClick={() => {
+                setShowMicPrompt(false)
+                startRecordingRef.current?.()
+              }}
+            >
+              Got it — allow microphone
+            </button>
+          </div>
         </div>
       )}
 
