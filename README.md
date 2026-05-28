@@ -117,15 +117,36 @@ Views: `study_summary`, `chapter_stats`
 
 ---
 
-## Deployment
+## Deployment — Cloudflare Pages
 
-The app auto-deploys to Vercel on every push to `main`. To deploy manually:
+The app is a Vite-built React SPA. The Supabase backend is independent — only the frontend needs hosting.
+
+### One-time setup
+
+1. Sign in at https://dash.cloudflare.com → **Workers & Pages** → **Create application** → **Pages** → **Connect to Git**.
+2. Authorize Cloudflare to access your GitHub account and select the `usertesting` repo.
+3. **Build settings:**
+   - Framework preset: **Vite**
+   - Build command: `npm run build`
+   - Build output directory: `dist`
+   - Root directory: (leave empty)
+4. **Environment variables** (add in Settings → Environment variables, both Production and Preview):
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON`
+   - `VITE_ADMIN_PASSWORD`
+5. **Deploy.** First deploy takes ~1–2 min. You'll get a URL like `https://usertesting-abc.pages.dev`.
+
+### Ongoing
+
+The app auto-deploys on every push to `main`. Pull requests get preview deployments at unique URLs.
+
+### SPA routing
+
+`public/_redirects` contains the SPA fallback rule (`/* /index.html 200`) so React Router routes like `/s/:studyId` and `/admin/dashboard` work on deep links and refreshes. Cloudflare Pages picks this up automatically from `_redirects` — no extra config.
+
+### Local build/preview
+
 ```bash
-npm run build
-# then push to main, or deploy via Vercel dashboard
+npm run build      # outputs to dist/
+npm run preview    # serves dist/ locally on http://localhost:4173
 ```
-
-Set these environment variables in the Vercel project settings:
-- `VITE_SUPABASE_URL`
-- `VITE_SUPABASE_ANON`
-- `VITE_ADMIN_PASSWORD`
