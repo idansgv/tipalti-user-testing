@@ -430,6 +430,9 @@ export default function AdminDashboard() {
             >
               {theme === 'light' ? <MoonIcon /> : <SunIcon />}
             </button>
+            <Btn variant="secondary" onClick={() => navigate('/admin/studies/import')}>
+              Import JSON
+            </Btn>
             <Btn onClick={() => navigate('/admin/studies/new')}>
               New Study
             </Btn>

@@ -273,24 +273,24 @@ export default function Prototype() {
 
       {/* ── Mic pre-permission modal ── */}
       {showMicPrompt && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-bg/80 backdrop-blur-sm">
-          <div className="bg-surface border border-border rounded-2xl px-8 py-7 max-w-sm w-full mx-4 shadow-2xl flex flex-col gap-5">
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-[#0A1628]/80 backdrop-blur-sm">
+          <div className="bg-[#ffbd01] rounded-2xl px-8 py-7 max-w-sm w-full mx-4 shadow-2xl flex flex-col gap-5">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-accent/15 flex items-center justify-center flex-shrink-0">
-                <svg className="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+              <div className="w-10 h-10 rounded-full bg-[#0d0d0d]/10 flex items-center justify-center flex-shrink-0">
+                <svg className="w-5 h-5 text-[#0d0d0d]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 0 1 6 0v8.25a3 3 0 0 1-3 3Z" />
                 </svg>
               </div>
-              <h2 className="text-base font-semibold text-text">Think out loud</h2>
+              <h2 className="text-base font-semibold text-[#0d0d0d]">Think out loud</h2>
             </div>
-            <p className="text-sm text-muted leading-relaxed">
+            <p className="text-sm text-[#0d0d0d]/70 leading-relaxed">
               As you explore the prototype, please narrate your thoughts — what you're looking for, what you expect to happen, and anything that feels confusing or surprising.
             </p>
-            <p className="text-sm text-muted leading-relaxed">
+            <p className="text-sm text-[#0d0d0d]/70 leading-relaxed">
               Your browser will ask for microphone access so we can capture your commentary. This recording is only used to help the research team understand your experience.
             </p>
             <button
-              className="w-full py-2.5 rounded-lg bg-accent text-bg text-sm font-semibold hover:opacity-90 transition-opacity"
+              className="w-full py-2.5 rounded-lg bg-[#0d0d0d] text-[#ffbd01] text-sm font-semibold hover:opacity-90 transition-opacity"
               onClick={() => {
                 setShowMicPrompt(false)
                 startRecordingRef.current?.()
@@ -305,8 +305,8 @@ export default function Prototype() {
       {/* ── Mic denied toast ── */}
       {micToast === 'denied' && (
         <div className="absolute top-4 left-1/2 -translate-x-1/2 z-40
-          bg-surface border border-warn/30 rounded-lg px-4 py-2.5
-          font-mono text-xs text-warn shadow-lg">
+          bg-[#ffbd01] border border-[#0d0d0d]/15 rounded-lg px-4 py-2.5
+          font-mono text-xs text-[#0d0d0d]/70 shadow-lg">
           Mic unavailable — audio not recorded
         </div>
       )}
@@ -320,13 +320,13 @@ export default function Prototype() {
 
       {/* ── Task completion overlay ── */}
       {completionOverlay && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-bg/70 backdrop-blur-sm">
-          <div className="bg-surface border border-accent/30 rounded-2xl px-10 py-8 flex flex-col items-center gap-3 shadow-2xl">
-            <div className="w-14 h-14 rounded-full bg-accent/20 flex items-center justify-center">
-              <span className="text-accent text-3xl">✓</span>
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-[#0A1628]/70 backdrop-blur-sm">
+          <div className="bg-[#ffbd01] rounded-2xl px-10 py-8 flex flex-col items-center gap-3 shadow-2xl">
+            <div className="w-14 h-14 rounded-full bg-[#0d0d0d]/10 flex items-center justify-center">
+              <span className="text-[#0d0d0d] text-3xl">✓</span>
             </div>
-            <p className="text-base font-semibold text-text">Task complete</p>
-            <p className="text-xs text-muted font-mono">{completionOverlay}</p>
+            <p className="text-base font-semibold text-[#0d0d0d]">Task complete</p>
+            <p className="text-xs text-[#0d0d0d]/50 font-mono">{completionOverlay}</p>
           </div>
         </div>
       )}
@@ -344,8 +344,8 @@ export default function Prototype() {
         {!mcVisible && (
           <div
             className="absolute bottom-full left-1/2 -translate-x-1/2 cursor-pointer
-              bg-bg/80 border border-border border-b-0 rounded-t-lg
-              px-4 py-1.5 font-mono text-[9px] text-muted hover:text-text transition-colors"
+              bg-[#ffbd01] border border-[#0d0d0d]/10 border-b-0 rounded-t-lg
+              px-4 py-1.5 font-mono text-[9px] text-[#0d0d0d]/50 hover:text-[#0d0d0d] transition-colors"
             onClick={() => { setMcVisible(true); scheduleMcHide() }}
           >
             ▲ mission control
@@ -353,24 +353,24 @@ export default function Prototype() {
         )}
 
         <div
-          className="bg-bg/90 border-t border-accent/30 px-4 py-3 flex items-center gap-3"
+          className="bg-[#ffbd01] border-t border-[#0d0d0d]/10 px-4 py-3 flex items-center gap-3"
           onMouseEnter={() => clearTimeout(hideTimerRef.current)}
           onMouseLeave={scheduleMcHide}
         >
           {/* Task + timer */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-0.5">
-              <span className="font-mono text-[9px] text-accent tracking-wider">
+              <span className="font-mono text-[9px] text-[#0d0d0d]/50 tracking-wider">
                 TASK {pos}
               </span>
-              <span className="text-[11px] text-text truncate">
+              <span className="text-[11px] text-[#0d0d0d] truncate">
                 {chapter.task_text}
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="rec-dot" />
-              <span className="font-mono text-[10px] text-accent">{formatTime(elapsed)}</span>
-              <span className="font-mono text-[9px] text-muted">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#0d0d0d]/50" style={{ animation: 'pulse-dot 1.4s ease-in-out infinite' }} />
+              <span className="font-mono text-[10px] text-[#0d0d0d]">{formatTime(elapsed)}</span>
+              <span className="font-mono text-[9px] text-[#0d0d0d]/50">
                 {voiceActive ? 'recording + audio' : 'recording'}
               </span>
             </div>
@@ -381,8 +381,8 @@ export default function Prototype() {
             onClick={() => handleFinish('gave_up')}
             disabled={finishing}
             className="flex-shrink-0 px-3 py-1.5 rounded text-[10px] font-bold
-              text-warn border border-warn/30 bg-warn/10
-              hover:bg-warn/20 transition-colors disabled:opacity-40"
+              text-[#0d0d0d] border border-[#0d0d0d]/25
+              hover:bg-[#0d0d0d]/10 transition-colors disabled:opacity-40"
           >
             ✗ Can't complete this
           </button>
@@ -390,7 +390,7 @@ export default function Prototype() {
             onClick={() => handleFinish('completed')}
             disabled={finishing}
             className="flex-shrink-0 px-3 py-1.5 rounded text-[10px] font-bold
-              bg-accent text-bg hover:opacity-90 transition-opacity disabled:opacity-40"
+              bg-[#0d0d0d] text-[#ffbd01] hover:opacity-80 transition-opacity disabled:opacity-40"
           >
             ✓ Done
           </button>

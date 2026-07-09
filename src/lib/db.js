@@ -483,3 +483,71 @@ export async function duplicateStudy(studyId) {
 
   return newStudy.id
 }
+
+export async function createStudyFromSpec(spec) {
+  const { data: study, error: sErr } = await supabase
+    .from('studies')
+    .insert({
+      title:                  spec.title,
+      chapter_count:          spec.chapters.length,
+      enable_voice_recording: spec.enable_voice_recording ?? false,
+    })
+    .select()
+    .single()
+  if (sErr) throw sErr
+
+  for (const ch of spec.chapters) {
+    const { data: chapter, error: cErr } = await supabase
+      .from('chapters')
+      .insert({
+        study_id:      study.id,
+        position:      ch.position,
+        title:         ch.title,
+        task_text:     ch.task_text,
+        figma_url:     ch.figma_url || null,
+        is_figma_make: ch.is_figma_make ?? false,
+      })
+      .select()
+      .single()
+    if (cErr) throw cErr
+
+    if (ch.survey_questions?.length) {
+      const rows = ch.survey_questions.map((q, i) => ({
+        chapter_id:   chapter.id,
+        position:     i + 1,
+        kind:         q.kind,
+        prompt:       q.prompt,
+        options:      q.options || null,
+        scale_labels: q.scale_labels || null,
+      }))
+      const { error: qErr } = await supabase.from('survey_questions').insert(rows)
+      if (qErr) throw qErr
+    }
+
+    if (ch.triggers?.length) {
+      const rows = ch.triggers.map((t, i) => ({
+        chapter_id: chapter.id,
+        position:   i + 1,
+        name:       t.name,
+        frame_name: t.frame_name,
+        action:     t.action || 'none',
+      }))
+      const { error: tErr } = await supabase.from('trigger_definitions').insert(rows)
+      if (tErr) throw tErr
+    }
+  }
+
+  if (spec.screener_questions?.length) {
+    const rows = spec.screener_questions.map((q, i) => ({
+      study_id: study.id,
+      position: i + 1,
+      prompt:   q.prompt,
+      kind:     q.kind,
+      options:  q.options || null,
+    }))
+    const { error: sqErr } = await supabase.from('screener_questions').insert(rows)
+    if (sqErr) throw sqErr
+  }
+
+  return study.id
+}

@@ -13,6 +13,7 @@ export default {
         success: 'rgb(var(--color-success) / <alpha-value>)',
         warn:    'rgb(var(--color-warn) / <alpha-value>)',
         timer:   'rgb(var(--color-timer) / <alpha-value>)',
+        yellow:  'rgb(var(--color-yellow) / <alpha-value>)',
       },
       fontFamily: {
         sans: ['Geist', 'sans-serif'],

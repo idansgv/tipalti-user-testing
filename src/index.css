@@ -14,6 +14,7 @@
   --color-success: 13 158 92;
   --color-warn:    210 50 50;
   --color-timer:   196 116 8;
+  --color-yellow:  255 189 1;
 }
 
 [data-theme="dark"] {
@@ -26,6 +27,7 @@
   --color-success: 61 214 140;
   --color-warn:    240 90 90;
   --color-timer:   245 166 35;
+  --color-yellow:  255 189 1;
 }
 
 @layer base {

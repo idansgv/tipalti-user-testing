@@ -24,6 +24,7 @@ import AdminLogin     from './pages/admin/AdminLogin'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import StudyResults   from './pages/admin/StudyResults'
 import StudyBuilder   from './pages/admin/StudyBuilder'
+import StudyImport    from './pages/admin/StudyImport'
 
 export default function App() {
   return (
@@ -45,6 +46,7 @@ export default function App() {
           <Route path="/admin/studies/new"                 element={<StudyBuilder />} />
           <Route path="/admin/studies/:studyId/edit"       element={<StudyBuilder />} />
           <Route path="/admin/studies/:studyId"            element={<StudyResults />} />
+          <Route path="/admin/studies/import"              element={<StudyImport />} />
         </Route>
 
         {/* Fallback */}
